@@ -30,13 +30,14 @@ def LeNet(input_shape,
     
     for layer_size in layer_sizes:
         flow = dense(layer_size, activation='relu')(flow)
-        
+    
     outs = dense(n_classes, activation=None)(flow)
     model = tf.keras.Model(inputs=inputs, outputs=outs)
     return model
 
 
-def LeNetConv(input_shape, n_classes, l2_reg=0, initializer='glorot_uniform', **kwargs):
+def LeNetConv(input_shape, n_classes, l2_reg=0, initializer='glorot_uniform',
+              **kwargs):
     global gl_regularizer, gl_initializer
     gl_regularizer = tf.keras.regularizers.l2(l2_reg) if l2_reg else None
     gl_initializer = initializer

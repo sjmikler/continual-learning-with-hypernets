@@ -1,0 +1,53 @@
+module: classify.models.vgg
+model: VGG11
+
+model_config:
+    input_shape: [224, 224, 3]
+    n_classes: 1000
+    l2_reg: 1e-4
+    regularize_bias: False
+
+dataset: classify.datasets.imagenet
+dataset_config:
+    resize: 178
+    train_crop: 156
+    valid_crop: 156
+    batch_size: 128
+    valid_batch_size: 128
+
+optimizer: optimizers.SGD
+optimizer_config:
+    precision: 16b
+    nesterov: True
+    learning_rate: OneCycle
+    learning_rate_config:
+        start_val: 0.0
+        centr_val: 0.3
+        final_val: 0.0001
+        final_step: 100000
+        centr_step: 50000
+    momentum: OneCycle
+    momentum_config:
+        start_val: 0.95
+        centr_val: 0.85
+        final_val: 0.95
+        final_step: 100000
+        centr_step: 50000
+
+train_config:
+    log_interval: 100
+    val_interval: 4000
+    step_fn: classify.steps.wrappers.swa
+    step_fn_config:
+        running_mean: 0.99
+        wrap: classify.steps.default
+
+expdir: imagenet_1st
+ckpdir: checkpoints/<seed>
+logdir: <expdir>/<run_name>/<seed>
+
+test_for_errors: Truecd Wocd
+max_iteration: 100000
+repeat: 1
+---
+run_name: <model>
