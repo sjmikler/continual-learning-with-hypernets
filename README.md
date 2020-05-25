@@ -8,7 +8,7 @@ The intention is to run experiments using `.yaml` config file as in `experiment.
 * Short term
     * ✔ Make hypernetworks learn **chunks** of smaller network, not all weights at once
     * ✔ Inject hypernetwork from playground to separate model, i.e. "Lenet Hypernet"
-    * Reproduce hypernetwork result on separete task (over 90% accuracy, read [3])
+    * ✔ Reproduce hypernetwork result on separete task (over 90% accuracy)
     * Create `train.py` file compatibile with `models` and `datasets`
     
     
