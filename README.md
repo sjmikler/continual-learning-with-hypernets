@@ -10,11 +10,12 @@ The intention is to run experiments using `.yaml` config file as in `experiment.
     * ✔ Inject hypernetwork from playground to separate model, i.e. "Lenet Hypernet"
     * ✔ Reproduce hypernetwork result on separete task (over 90% accuracy)
     * Create `train.py` file compatibile with `models` and `datasets`
+    * Test HyperNetwork in continual learning scenario
     
     
 * PermutedMNIST-100
     * Prepare models to compare with, i.e. models learning all tasks at once
-    * Create meta model, that generates models, as in [1]
+    * ✔ Create meta model, that generates models, as in [1]
     * Make it learn anything in continual learning scenario and generate tokens for tasks
     * Debug it, replicating results from [1]
     
