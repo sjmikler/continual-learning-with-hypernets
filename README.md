@@ -26,6 +26,6 @@ The intention is to run experiments using `.yaml` config file as in `experiment.
     * Prepare ResNet model and make it learn CIFAR-10
 
 **This repository reproduces or uses ideas from following papers:**
-* (1) Continual learning with hypernetworks, <https://arxiv.org/abs/1906.00695>
-* (2) Three scenarios for continual learning, <https://arxiv.org/pdf/1904.07734.pdf>
-* (3) HyperNetworks, <https://arxiv.org/pdf/1609.09106.pdf>
+1. Continual learning with hypernetworks, <https://arxiv.org/abs/1906.00695>
+2. Three scenarios for continual learning, <https://arxiv.org/pdf/1904.07734.pdf>
+3. HyperNetworks, <https://arxiv.org/pdf/1609.09106.pdf>
