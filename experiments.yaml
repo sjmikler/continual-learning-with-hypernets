@@ -49,5 +49,12 @@ logdir: <expdir>/<run_name>/<seed>
 test_for_errors: Truecd Wocd
 max_iteration: 100000
 repeat: 1
----
-run_name: <model>
+
+RUN_NAME: multitask_testing
+LOGDIR: logs
+BATCH_SIZE: 128
+EMBEDDING_DIM: 50
+N_CHUNKS: 40
+HNET_HIDDEN_DIMS: [25]
+INNER_NET_DIMS: [784, 300, 10]
+L2REG: 1e-4

@@ -1,27 +1,24 @@
 import random
 
 import tensorflow as tf
+import yaml
 
 from datasets import mnist
 from models import hnet_with_chunks
 from training_utils import get_training_function
 
-# TODO: THESE ARE CONSTANTS TO BE READ FROM experiments.yaml:
-RUN_NAME = 'multitask_testing'
-LOGDIR = 'logs'
-BATCH_SIZE = 128
-EMBEDDING_DIM = 50
-N_CHUNKS = 40
-HNET_HIDDEN_DIMS = [25]
-INNER_NET_DIMS = [784, 300, 10]
-L2REG = 1e-4
+with open("experiments.yaml", "r") as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
 
-task_generator = mnist.PermutedMNIST(bs=BATCH_SIZE)
-model = hnet_with_chunks.create(embedding_dim=EMBEDDING_DIM,
-                                n_chunks=N_CHUNKS,
-                                hnet_hidden_dims=HNET_HIDDEN_DIMS,
-                                inner_net_dims=INNER_NET_DIMS,
-                                l2reg=L2REG)
+RUN_NAME = config['RUN_NAME']
+LOGDIR = config['LOGDIR']
+
+task_generator = mnist.PermutedMNIST(bs=config['BATCH_SIZE'])
+model = hnet_with_chunks.create(embedding_dim=config['EMBEDDING_DIM'],
+                                n_chunks=config['N_CHUNKS'],
+                                hnet_hidden_dims=config['HNET_HIDDEN_DIMS'],
+                                inner_net_dims=config['INNER_NET_DIMS'],
+                                l2reg=config['L2REG'])
 
 rnd_idx = random.randint(1000, 9999)
 writer = tf.summary.create_file_writer(f'{LOGDIR}/{RUN_NAME}{rnd_idx}')
@@ -35,7 +32,7 @@ def train_on_task(model, task_idx, iterations):
     :param iterations: number of batches to train the task from
     :return: learned embedding of the task with index `task_idx`
     """
-    task_embedding = tf.random.normal([EMBEDDING_DIM]) / 10
+    task_embedding = tf.random.normal([config['EMBEDDING_DIM']]) / 10
     task_embedding = tf.Variable(task_embedding, trainable=True)
 
     train_ds = task_generator.get_iterator(split='train', task=task_idx)
