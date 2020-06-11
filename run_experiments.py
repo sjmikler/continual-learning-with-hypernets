@@ -75,6 +75,14 @@ for config in configs:
     N_TASKS = config['n_tasks_to_learn']
     ITERS = config['iters_per_task']
 
+    task_generator = mnist.PermutedMNIST(bs=config['batch_size'])
+
+    rnd_idx = random.randint(1000, 9999)
+    writer = tf.summary.create_file_writer(f'{LOGDIR}/{RUN_NAME}{rnd_idx}')
+
+    with writer.as_default():
+        tf.summary.text(name='experiment', data=str(config), step=0)
+
 
     def get_model(conf):
         """
@@ -90,11 +98,6 @@ for config in configs:
 
 
     model = get_model(config)
-    task_generator = mnist.PermutedMNIST(bs=config['batch_size'])
-
-    rnd_idx = random.randint(1000, 9999)
-    writer = tf.summary.create_file_writer(f'{LOGDIR}/{RUN_NAME}{rnd_idx}')
-
     task_data = []
 
     for task_idx in range(N_TASKS):

@@ -1,11 +1,11 @@
-run_name: 1e-2m50d40c
-n_tasks_to_learn: 100
 logdir: logs
-batch_size: 128
-task_embedding_dim: 50
+run_name: 1e-2m100d40c256bs
+n_tasks_to_learn: 10
+batch_size: 256
+task_embedding_dim: 100
 num_chuks: 40
 hypernet_hidden_dims: [25]
 innernet_all_dims: [784, 300, 10]
-l2_regularization: 1e-4
+l2_regularization: 1e-5
 l2_memory_regularization: 1e-2
 iters_per_task: 4000
