@@ -10,29 +10,29 @@ innernet_all_dims: [784, 300, 10]
 l2_regularization: 1e-5
 l2_memory_regularization: 0
 iters_per_task: 500
-#---
-#logdir: logs
-#run_name: big_network_big_regularization
-#n_tasks_to_learn: 100
-#full_testing_tasks: [10, 20, 30, 50]
-#batch_size: 256
-#task_embedding_dim: 100
-#num_chunks: 30
-#hypernet_hidden_dims: [200, 250, 350]
-#innernet_all_dims: [784, 300, 10]
-#l2_regularization: 1e-6
-#l2_memory_regularization: 1e-1
-#iters_per_task: 500
-#---
-#logdir: logs
-#run_name: small_network_big_regularization
-#n_tasks_to_learn: 100
-#full_testing_tasks: [10, 20, 30, 50]
-#batch_size: 256
-#task_embedding_dim: 50
-#num_chunks: 60
-#hypernet_hidden_dims: [300, 200, 100]
-#innernet_all_dims: [784, 100, 100, 10]
-#l2_regularization: 1e-7
-#l2_memory_regularization: 1e-1
-#iters_per_task: 2000
+---
+logdir: logs
+run_name: big_network_big_regularization
+n_tasks_to_learn: 100
+full_testing_tasks: [10, 20, 30, 50]
+batch_size: 256
+task_embedding_dim: 100
+num_chunks: 30
+hypernet_hidden_dims: [200, 250, 350]
+innernet_all_dims: [784, 300, 10]
+l2_regularization: 1e-6
+l2_memory_regularization: 1e-1
+iters_per_task: 500
+---
+logdir: logs
+run_name: small_network_big_regularization
+n_tasks_to_learn: 100
+full_testing_tasks: [10, 20, 30, 50]
+batch_size: 256
+task_embedding_dim: 50
+num_chunks: 60
+hypernet_hidden_dims: [300, 200, 100]
+innernet_all_dims: [784, 100, 100, 10]
+l2_regularization: 1e-7
+l2_memory_regularization: 1e-1
+iters_per_task: 2000
