@@ -1,3 +1,4 @@
+# %%
 import random
 
 import tensorflow as tf
@@ -11,17 +12,23 @@ from training_utils import get_training_function
 # %%
 # DEFINE FUNCTIONS
 
-def train_on_task(model, task_idx, iterations, memory_regularization,
-                  continual_regularization_data):
+def train_on_task(model,
+                  task_idx,
+                  iterations,
+                  memory_reg,
+                  task_tokens,
+                  min_valid_acc):
     """
     Trains the model in PermutedMNIST subtask and generates the token for task
+
     :param model: `tf.keras.Model` instance
     :param task_idx: an integer, for Permuted MNIST from 0 to 99
     :param iterations: number of batches to train the task from
     :return: learned embedding of the task with index `task_idx`
-    :param memory_regularization: float
-    :param continual_regularization_data: pairs [[token1, inner_weights1],
-                                                 [token2, inner_weights2],...]
+    :param memory_reg: float
+    :param min_valid_acc: float <0.0; 1.0), will repeat training until this accuracy is
+        achieved
+    :param task_tokens: list of task embeddings
     """
     embedding_dim = model.layers[0].input_shape[1] // 2
     task_embedding = tf.random.normal([embedding_dim]) / 10
@@ -33,13 +40,21 @@ def train_on_task(model, task_idx, iterations, memory_regularization,
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     optimizer = tf.keras.optimizers.Adam()
 
-    train_epoch = get_training_function(model, loss_fn, optimizer,
-                                        memory_regularization)
-    train_epoch(token=task_embedding,
-                steps_per_epoch=iterations,
-                train_ds=train_ds,
-                test_ds=test_ds,
-                regularization=continual_regularization_data)
+    train_epoch = get_training_function(model=model,
+                                        input_shape=[1, 784],
+                                        loss_fn=loss_fn,
+                                        optimizer=optimizer,
+                                        memory_reg=memory_reg,
+                                        task_tokens=task_tokens)
+    for _ in range(10):
+        valid_acc = train_epoch(token=task_embedding,
+                                steps_per_epoch=iterations,
+                                train_ds=train_ds,
+                                test_ds=test_ds)
+        if valid_acc > min_valid_acc:
+            break
+        else:
+            print(f'REPEATING TASK')
     return task_embedding
 
 
@@ -75,6 +90,9 @@ for config in configs:
     N_TASKS = config['n_tasks_to_learn']
     ITERS = config['iters_per_task']
 
+    VALID_TASKS_IDX = config['full_testing_tasks']
+    VALID_TASKS_IDX.append(N_TASKS)
+
     task_generator = mnist.PermutedMNIST(bs=config['batch_size'])
 
     rnd_idx = random.randint(1000, 9999)
@@ -90,7 +108,7 @@ for config in configs:
         :return: tf.keras.Model
         """
         model = hnet_with_chunks.create(embedding_dim=conf['task_embedding_dim'],
-                                        n_chunks=conf['num_chuks'],
+                                        n_chunks=conf['num_chunks'],
                                         hnet_hidden_dims=conf['hypernet_hidden_dims'],
                                         inner_net_dims=conf['innernet_all_dims'],
                                         l2reg=conf['l2_regularization'])
@@ -105,33 +123,33 @@ for config in configs:
         embed = train_on_task(model,
                               task_idx=task_idx,
                               iterations=ITERS if task_idx > 0 else ITERS * 2,
-                              memory_regularization=l2_MEMORY,
-                              continual_regularization_data=task_data)
-
-        empty_input = tf.zeros([1, 784])
-        _, inner_net_weights = model([embed, empty_input])
-        task_data.append([embed, inner_net_weights])
+                              memory_reg=l2_MEMORY,
+                              task_tokens=task_data,
+                              min_valid_acc=0.0)
+        task_data.append(embed)
 
         with writer.as_default():
             test_task = 0
             acc = test_on_task(model,
                                task_idx=test_task,
-                               task_embedding=task_data[test_task][0])
+                               task_embedding=task_data[test_task])
 
             print(f'TASK {test_task} accuracy: {acc}')
             tf.summary.scalar(name=f'task {test_task} accuracy',
                               data=acc,
                               step=task_idx)
 
-    with writer.as_default():
-        for test_task in range(N_TASKS):
-            acc = test_on_task(model,
-                               task_idx=test_task,
-                               task_embedding=task_data[test_task][0])
+        with writer.as_default():
+            task_learned = task_idx + 1
+            if task_learned in VALID_TASKS_IDX:
+                for test_task in range(task_learned):
+                    acc = test_on_task(model,
+                                       task_idx=test_task,
+                                       task_embedding=task_data[test_task])
 
-            print(f'TASK {test_task} accuracy: {acc}')
-            tf.summary.scalar(name=f'final tasks accuracy',
-                              data=acc,
-                              step=test_task)
+                    print(f'TASK {test_task} accuracy: {acc}')
+                    tf.summary.scalar(name=f'accuracy measured at {task_learned}',
+                                      data=acc,
+                                      step=test_task)
 
 # %%
