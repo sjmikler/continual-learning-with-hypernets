@@ -1,4 +1,3 @@
-# Continual Learning with Hypernetworks
 The main purposes of this project was to learn what is the state of continual learning with neural networks and to reproduce one of the most interesting works from this domain.
   
 # Continual Learning
