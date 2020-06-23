@@ -1,22 +1,5 @@
 # Continual Learning with Hypernetworks
 The main purposes of this project was to learn what is the state of continual learning with neural networks and to reproduce one of the most interesting works from this domain.
-
-*TODOS:*
-* PermutedMNIST-100
-    * ✔ Create meta model, that generates models, as in [1]
-    * ✔ Make hypernetworks learn **chunks** of smaller network, not all weights at once
-    * ✔ Inject hypernetwork from playground to separate model, i.e. "Lenet Hypernet"
-    * ✔ Reproduce hypernetwork result on separate task (over 90% accuracy)
-    * ✔ Make it learn anything in continual learning scenario and generate tokens for tasks
-    * ✔ Create evaluations that cheats and **knows** what task to do now!
-    * ✔ Test HyperNetwork in continual learning scenario
-    * ✔ Use regularization to finally stop the forgetting
-    * ✔ Create `train.py` to run full pipeline easily
-    * ✔ Make sure network matches results from [1]
-        * ✔ It doesn't. I see a difference in regularization implementation and it need to be fixed! Look at [1]
-    * ✔ Prepare clean tensorboard logs and keep them visible in `logs` folder
-    * ✔ Add plot pictures to report
-
   
 # Continual Learning
 It is learning scenario in which there are multiple distinct tasks for model to learn. The most accurate way to do this is probably to learn all the tasks at once. E.g. having ten different tasks of classification with ten classes each, one can sample one example from each task and construct a batch from them which could be used to train a network. This method would bring the best possible accuracy for such multitask learning neural network. However, such learning is not considered continual learning. This is because sometimes, not all tasks are available at once or sometimes, not all tasks can fit in the memory at once. These would be the cases of practical uses for continual learning. Although, even in those cases, it could be better to train separate models for separate tasks. However, we expect general artificial intelligence to be able to solve multiple tasks, because humans and animals are able to do so. This itself might be a good reason to develop better continual learning algorithms. In continual learning we want a model that doesn't forget old skills, when learning something new.
